@@ -2,9 +2,9 @@ library(shiny)
 library(shinydashboard)
 library(leaflet)
 library(DT)
-# potomac.df <- sprintf("020700%02d", seq(1, 11, 1)) %>% 
-#   paste(collapse = ";") %>% 
-#   whatWQPsites(huc = ., siteType = "Stream")
+potomac.df <- sprintf("020700%02d", seq(1, 11, 1)) %>%
+  paste(collapse = ";") %>% 
+  dataRetrieval::whatWQPsites(huc = ., siteType = "Stream")
 source("modules/module_leaflet.R")
 source("modules/module_dt.R")
 # UI---------------------------------------------------------------------------
