@@ -1,7 +1,12 @@
 library(shiny)
 library(shinydashboard)
 library(leaflet)
+library(DT)
+# potomac.df <- sprintf("020700%02d", seq(1, 11, 1)) %>% 
+#   paste(collapse = ";") %>% 
+#   whatWQPsites(huc = ., siteType = "Stream")
 source("modules/module_leaflet.R")
+source("modules/module_dt.R")
 # UI---------------------------------------------------------------------------
 ui <- dashboardPage(
   dashboardHeader(title = "DIME: Beta"),
@@ -32,8 +37,9 @@ ui <- dashboardPage(
                   column(width = 12,
                 tabBox(
                   width = 12, height = "650px",
-                  tabPanel("Tab1", leaflet_output("leaflet")),
-                  tabPanel("Tab2", "Tab content 2")
+                  #tabPanel("Tab1", dt_output("dt"))#,
+                  tabPanel("Map", leaflet_output("leaflet")),
+                  tabPanel("Table", dt_output("dt"), icon = icon("table"))
                 )),
                 column(width = 12,
                 box("test", width = 12)
@@ -53,7 +59,10 @@ ui <- dashboardPage(
 
 # Server-----------------------------------------------------------------------
 server <- function(input, output, session) {
-  callModule(leaflet_plot, "leaflet")
+  
+  callModule(leaflet_plot, "leaflet", potomac.df)
+  callModule(dt_table, "dt", potomac.df)
+  
 }
 
 # Run the application 
