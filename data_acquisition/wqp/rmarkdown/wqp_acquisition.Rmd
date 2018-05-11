@@ -1,0 +1,54 @@
+---
+title: "Untitled"
+author: "Zachary M. Smith"
+date: "May 10, 2018"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+suppressPackageStartupMessages(
+  library(tidyverse)
+)
+library(dataRetrieval)
+library(leaflet)
+```
+
+
+```{r}
+potomac.huc8.str <- sprintf("020700%02d", seq(1, 11, 1)) %>% 
+  paste(collapse = ";")
+```
+
+```{r}
+test <- whatWQPsites(huc = potomac.huc8.str)
+
+```
+
+```{r}
+test2 <- test %>% 
+  select(MonitoringLocationName, LongitudeMeasure, LatitudeMeasure) %>% 
+  distinct()
+
+test3 <- test %>% 
+  select(LongitudeMeasure, LatitudeMeasure) %>% 
+  distinct()
+```
+
+```{r}
+ icprb.map <- "https://api.mapbox.com/styles/v1/skaisericprb/citvqu6qb002p2jo1ig5hnvtk/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2thaXNlcmljcHJiIiwiYSI6ImNpa2U3cGN1dDAwMnl1cm0yMW94bWNxbDEifQ.pEG_X7fqCAowSN8Xr6rX8g"
+
+leaflet::leaflet(options = leaflet::leafletOptions(maxBoundsViscosity = 1)) %>%
+      #leaflet::addTiles(urlTemplate = icprb.map, options = leaflet::tileOptions(minZoom = 7, maxZoom = 18)) %>%
+  leaflet::addTiles() %>% 
+      leaflet::addMarkers(~LongitudeMeasure, ~LatitudeMeasure, data = test2,
+                 popup = ~as.character(MonitoringLocationName),
+                 label = ~as.character(MonitoringLocationName),
+                 clusterOptions = leaflet::markerClusterOptions()) %>% 
+      leaflet::setMaxBounds(lng1 = -81, lat1 = 38.5, lng2 = -75, lat2 = 39.5) %>%
+      leaflet::setView(-78.110291, lat = 39.029230, zoom = 8)
+```
+
+
+
